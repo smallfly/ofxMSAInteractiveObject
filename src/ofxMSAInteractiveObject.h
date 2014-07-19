@@ -18,6 +18,9 @@ class ofxMSAInteractiveObject : public ofRectangle {
 public:
 	bool		enabled;				// set this to false to temporarily disable all events
 	bool		verbose;
+    
+    static bool doCoordTransformation;
+    static ofRectangle coordSystemRect;
 
 	ofxMSAInteractiveObject();			// constructor
 	virtual ~ofxMSAInteractiveObject();	// destructor
@@ -102,5 +105,7 @@ private:
 	map<int, bool>    _isMousePressed;       // is mouse down over the rect (for any given mouse button)
     unsigned long   _stateChangeTimestampMillis;
 	ofRectangle	oldRect;
+    
+    ofVec2f screenToCanvas(ofVec2f vec);
 };
 

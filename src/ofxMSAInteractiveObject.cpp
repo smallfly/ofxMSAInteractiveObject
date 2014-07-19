@@ -12,6 +12,9 @@
 #include "ofxMSAInteractiveObject.h"
 #include "ofMain.h"
 
+bool ofxMSAInteractiveObject::doCoordTransformation = false;
+ofRectangle ofxMSAInteractiveObject::coordSystemRect = ofRectangle(.0f, .0f, .0f, .0f);
+
 //--------------------------------------------------------------
 ofxMSAInteractiveObject::ofxMSAInteractiveObject() {
 	_isMouseOver	= false;
@@ -108,6 +111,15 @@ void ofxMSAInteractiveObject::setSize(float _w, float _h) {
 //}
 
 //--------------------------------------------------------------
+ofVec2f ofxMSAInteractiveObject::screenToCanvas(ofVec2f vec)
+{
+    float transformedX = ofMap(vec.x, .0f, ofGetWidth(), coordSystemRect.x, coordSystemRect.x + coordSystemRect.width);
+    float transformedY = ofMap(vec.y, .0f, ofGetHeight(), coordSystemRect.y, coordSystemRect.y + coordSystemRect.height);
+    
+    return ofVec2f(transformedX, transformedY);
+}
+
+//--------------------------------------------------------------
 bool ofxMSAInteractiveObject::isMouseOver() const {
 	return _isMouseOver;
 }
@@ -183,6 +195,13 @@ void ofxMSAInteractiveObject::_mouseMoved(ofMouseEventArgs &e) {
 	int x = e.x;
 	int y = e.y;
 	int button = e.button;
+
+    if (doCoordTransformation) {
+        ofVec2f transformedCoord = screenToCanvas(ofVec2f(x, y));
+        x = transformedCoord.x;
+        y = transformedCoord.y;        
+    }
+    
 	if(verbose) printf("ofxMSAInteractiveObject::_mouseMoved(x: %i, y: %i)\n", x, y);
 	if(!enabled) return;
 	
@@ -211,6 +230,12 @@ void ofxMSAInteractiveObject::_mousePressed(ofMouseEventArgs &e) {
 	int x = e.x;
 	int y = e.y;
 	int button = e.button;
+    
+    if (doCoordTransformation) {
+        ofVec2f transformedCoord = screenToCanvas(ofVec2f(x, y));
+        x = transformedCoord.x;
+        y = transformedCoord.y;
+    }
 	
 	if(verbose) printf("ofxMSAInteractiveObject::_mousePressed(x: %i, y: %i, button: %i)\n", x, y, button);
 	if(!enabled) {
@@ -238,6 +263,12 @@ void ofxMSAInteractiveObject::_mouseDragged(ofMouseEventArgs &e) {
 	int x = e.x;
 	int y = e.y;
 	int button = e.button;
+    
+    if (doCoordTransformation) {
+        ofVec2f transformedCoord = screenToCanvas(ofVec2f(x, y));
+        x = transformedCoord.x;
+        y = transformedCoord.y;
+    }
 	
 	if(verbose) printf("ofxMSAInteractiveObject::_mouseDragged(x: %i, y: %i, button: %i)\n", x, y, button);
 	if(!enabled) {
@@ -273,6 +304,12 @@ void ofxMSAInteractiveObject::_mouseReleased(ofMouseEventArgs &e) {
 	int x = e.x;
 	int y = e.y;
 	int button = e.button;
+    
+    if (doCoordTransformation) {
+        ofVec2f transformedCoord = screenToCanvas(ofVec2f(x, y));
+        x = transformedCoord.x;
+        y = transformedCoord.y;
+    }
 	
 	if(verbose) printf("ofxMSAInteractiveObject::_mouseReleased(x: %i, y: %i, button: %i)\n", x, y, button);
 	if(!enabled) {
